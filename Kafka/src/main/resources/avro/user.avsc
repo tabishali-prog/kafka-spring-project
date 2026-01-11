@@ -1,0 +1,57 @@
+{
+  "name": "User",
+  "namespace": "com.eaton.kafka.confluent.user",
+  "type": "record",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "int"
+    },
+    {
+      "name": "personal_details",
+      "type": {
+        "fields": [
+          {
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "name": "date_of_birth",
+            "type": "string"
+          }
+        ],
+        "name": "PersonalDetails",
+        "type": "record"
+      }
+    },
+    {
+      "name": "contact",
+      "type": {
+        "fields": [
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string"
+          }
+        ],
+        "name": "Contact",
+        "type": "record"
+      }
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "department",
+      "type": "string"
+    }
+  ]
+}
