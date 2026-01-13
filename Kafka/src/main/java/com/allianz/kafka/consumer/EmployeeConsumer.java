@@ -21,8 +21,8 @@ public class EmployeeConsumer {
     }
 
     @KafkaListener(
-        topics = "employee",
-        groupId = "employee-db-writer-1",
+        topics = "${spring.kafka.topics.employee}",
+        groupId = "${spring.kafka.consumer.group-id}",
         containerFactory = "employeeKafkaListenerContainerFactory"
     )
     @Transactional

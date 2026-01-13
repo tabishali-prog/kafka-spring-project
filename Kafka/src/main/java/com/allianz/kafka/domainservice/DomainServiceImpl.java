@@ -1,5 +1,6 @@
 package com.allianz.kafka.domainservice;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,12 @@ import com.eaton.kafka.confluent.user.User;
 @Service
 public class DomainServiceImpl implements DomainService {
 
-	private final KafkaTemplate<String, Object> kafkaTemplate;
+	@Value("${spring.kafka.topics.user}")
+    private String userTopic;
+	
+	private final KafkaTemplate<String, User> kafkaTemplate;
 
-	public DomainServiceImpl(KafkaTemplate<String, Object> kafkaTemplate) {
+	public DomainServiceImpl(KafkaTemplate<String, User> kafkaTemplate) {
 		this.kafkaTemplate = kafkaTemplate;
 	}
 
@@ -32,7 +36,7 @@ public class DomainServiceImpl implements DomainService {
 		ct.setEmail(ur.getContact().getEmail());
 		ct.setPhone(ur.getContact().getPhone());
 		user.setContact(ct);
-		kafkaTemplate.send("user", user);
+		kafkaTemplate.send(userTopic, user);
 	}
 
 }

@@ -12,6 +12,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       auto-offset-reset: latest
+    topics:
+      user: "user"
+      employee: "employee"
 
   datasource:
     url: "jdbc:postgresql://localhost:5432/postgres"
