@@ -7,7 +7,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 
 import com.eaton.kafka.confluent.employee.Employee;
-
+/*
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
@@ -21,3 +21,4 @@ public class KafkaConsumerConfig {
 		return factory;
 	}
 }
+*/
