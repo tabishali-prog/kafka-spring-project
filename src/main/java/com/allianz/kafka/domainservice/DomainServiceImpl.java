@@ -1,5 +1,7 @@
 package com.allianz.kafka.domainservice;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -13,8 +15,8 @@ import com.eaton.kafka.confluent.user.User;
 public class DomainServiceImpl implements DomainService {
 
 	@Value("${spring.kafka.topics.user}")
-    private String userTopic;
-	
+	private String userTopic;
+
 	private final KafkaTemplate<String, User> kafkaTemplate;
 
 	public DomainServiceImpl(KafkaTemplate<String, User> kafkaTemplate) {
@@ -23,20 +25,30 @@ public class DomainServiceImpl implements DomainService {
 
 	@Override
 	public void sendToUserTopic(UserDetails ur) {
-		User user = new User();
+		if (ur == null) {
+			return;
+		}
+		var user = new User();
 		user.setUserId(ur.getUserId());
-		user.setStatus(ur.getStatus());
-		user.setDepartment(ur.getDepartment());
-		PersonalDetails pd = new PersonalDetails();
-		pd.setFirstName(ur.getPersonalDetails().getFirstName());
-		pd.setLastName(ur.getPersonalDetails().getLastName());
-		pd.setDateOfBirth(ur.getPersonalDetails().getDateOfBirth());
-		user.setPersonalDetails(pd);
-		Contact ct = new Contact();
-		ct.setEmail(ur.getContact().getEmail());
-		ct.setPhone(ur.getContact().getPhone());
-		user.setContact(ct);
-		kafkaTemplate.send(userTopic, user);
+		user.setStatus(Objects.requireNonNullElse(ur.getStatus(), ""));
+		user.setDepartment(Objects.requireNonNullElse(ur.getDepartment(), ""));
+		var pdReq = ur.getPersonalDetails();
+		if (pdReq != null) {
+			var pd = new PersonalDetails();
+			pd.setFirstName(Objects.requireNonNullElse(pdReq.getFirstName(), ""));
+			pd.setLastName(Objects.requireNonNullElse(pdReq.getLastName(), ""));
+			pd.setDateOfBirth(Objects.requireNonNullElse(pdReq.getDateOfBirth(), ""));
+			user.setPersonalDetails(pd);
+		}
+		var ctReq = ur.getContact();
+		if (ctReq != null) {
+			var ct = new Contact();
+			ct.setEmail(Objects.requireNonNullElse(ctReq.getEmail(), ""));
+			ct.setPhone(Objects.requireNonNullElse(ctReq.getPhone(), ""));
+			user.setContact(ct);
+		}
+		String key = String.valueOf(user.getUserId());
+		kafkaTemplate.send(userTopic, key, user);
 	}
 
 }

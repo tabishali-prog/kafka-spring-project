@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.allianz.kafka.domainservice.DomainService;
 import com.allianz.kafka.dto.UserDetails;
 import com.allianz.kafka.misc.ApplicationError;
+import com.allianz.kafka.misc.Constant;
 
 
 
@@ -22,10 +23,10 @@ public class Controller {
 		ApplicationError error = new ApplicationError();
 		try {
 			domainService.sendToUserTopic(user);
-			error.setErrorCode("200");
-			error.setErrorDesc("User sent successfully to Kafka");
+			error.setErrorCode(Constant.SUCCESS_CODE);
+			error.setErrorDesc(Constant.SUCCESS_MSG);
 		} catch (Exception e) {
-			error.setErrorCode("500");
+			error.setErrorCode(Constant.FAILURE_CODE);
 			error.setErrorDesc(e.getMessage());
 		}
 		return error;
