@@ -20,6 +20,8 @@ import org.springframework.kafka.core.ProducerFactory;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
+import org.springframework.kafka.listener.ContainerProperties;
+
 
 import com.eaton.kafka.confluent.employee.Employee;
 import com.eaton.kafka.confluent.user.User;
@@ -99,6 +101,8 @@ public class KafkaConfig {
 			ConsumerFactory<String, Employee> employeeConsumerFactory) {
 		ConcurrentKafkaListenerContainerFactory<String, Employee> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(employeeConsumerFactory);
+		factory.getContainerProperties()
+        .setAckMode(ContainerProperties.AckMode.MANUAL);
 		return factory;
 	}
 }

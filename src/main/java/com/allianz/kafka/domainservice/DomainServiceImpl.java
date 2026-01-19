@@ -7,6 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.allianz.kafka.dto.UserDetails;
+import com.eaton.kafka.confluent.employee.Employee;
+import com.eaton.kafka.confluent.employee.SalaryDetails;
 import com.eaton.kafka.confluent.user.Contact;
 import com.eaton.kafka.confluent.user.PersonalDetails;
 import com.eaton.kafka.confluent.user.User;
@@ -49,6 +51,18 @@ public class DomainServiceImpl implements DomainService {
 		}
 		String key = String.valueOf(user.getUserId());
 		kafkaTemplate.send(userTopic, key, user);
+	}
+
+	@Override
+	public Employee userToEmployeeTransformation(User user) {
+		String fullName = user.getPersonalDetails() != null
+				? user.getPersonalDetails().getFirstName() + " " + user.getPersonalDetails().getLastName()
+				: "";
+		SalaryDetails salary = SalaryDetails.newBuilder().setBaseSalary(60000).setCurrency("USD").build();
+		return Employee.newBuilder().setEmployeeId(String.valueOf(user.getUserId())).setFullName(fullName)
+				.setDepartmentName(user.getDepartment())
+				.setWorkEmail(user.getContact() != null ? user.getContact().getEmail() : "")
+				.setEmploymentStatus(user.getStatus()).setHireDate("2025-01-01").setSalaryDetails(salary).build();
 	}
 
 }
